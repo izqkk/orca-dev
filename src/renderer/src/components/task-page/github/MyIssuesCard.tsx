@@ -41,6 +41,8 @@ export function MyIssuesCard({
   const repoName = row.content.repository?.split('/').pop() ?? ''
   const reference = row.content.number !== null ? `#${row.content.number}` : ''
   const identity = [reference, repoName].filter(Boolean).join(' · ')
+  // Why: fall back to the title when the issue has no number, so the aria-label never reads "... from ".
+  const referenceLabel = reference || row.content.title
   return (
     <div
       role="button"
@@ -84,7 +86,7 @@ export function MyIssuesCard({
                 aria-label={translate(
                   'auto.components.TaskPage.myIssuesStartWorkspace',
                   'Start workspace from {{value0}}',
-                  { value0: reference }
+                  { value0: referenceLabel }
                 )}
               >
                 <ArrowRight className="size-3.5" />
@@ -105,7 +107,7 @@ export function MyIssuesCard({
               aria-label={translate(
                 'auto.components.TaskPage.myIssuesOpenInGitHub',
                 'Open {{value0}} in GitHub',
-                { value0: reference }
+                { value0: referenceLabel }
               )}
             >
               <ExternalLink className="size-3.5" />

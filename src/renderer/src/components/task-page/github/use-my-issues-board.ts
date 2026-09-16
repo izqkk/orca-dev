@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import type React from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAppStore } from '@/store'
 import { useProjectViewTable } from '@/components/github-project/useProjectViewTable'
 import {
@@ -24,7 +25,7 @@ import {
   type MyIssuesBoardRow
 } from './my-issues-board-rows'
 
-const EMPTY_ROWS: MyIssuesBoardRow[] = []
+const EMPTY_ROWS: readonly MyIssuesBoardRow[] = []
 
 export function useMyIssuesBoard({
   selectedRepoIds,
