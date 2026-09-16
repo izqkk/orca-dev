@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const { ipcSend } = vi.hoisted(() => ({ ipcSend: vi.fn() }))
 vi.mock('electron', () => ({
@@ -47,6 +47,12 @@ describe('installNativeFileDropHandlers drop listener', () => {
   let target: HTMLDivElement
   let seenByTarget: Event[]
 
+  beforeAll(() => {
+    // Why: the listener attaches to `document`, which persists across tests; installing once
+    // avoids stacking duplicate capture-phase listeners that would fire per test.
+    installNativeFileDropHandlers()
+  })
+
   beforeEach(() => {
     root = document.createElement('div')
     target = document.createElement('div')
@@ -56,7 +62,6 @@ describe('installNativeFileDropHandlers drop listener', () => {
     // Why: React delegates to the root container in the bubble phase; a bubble listener on the
     // parent stands in for it.
     root.addEventListener('drop', (event) => seenByTarget.push(event))
-    installNativeFileDropHandlers()
   })
 
   afterEach(() => {
@@ -86,5 +91,6 @@ describe('installNativeFileDropHandlers drop listener', () => {
     const event = dispatchDrop(target, new FakeDataTransfer([], [file]))
     expect(seenByTarget).toHaveLength(0)
     expect(event.defaultPrevented).toBe(true)
+    expect(ipcSend).toHaveBeenCalledTimes(1)
   })
 })
