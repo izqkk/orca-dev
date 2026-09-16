@@ -2,6 +2,7 @@ import type { TaskPageComposerActionsModel } from '../use-task-page-composer-act
 import PullRequestPage from '@/components/PullRequestPage'
 import GitHubItemDialog from '@/components/GitHubItemDialog'
 import ProjectViewWrapper from '@/components/github-project/ProjectViewWrapper'
+import MyIssuesBoard from './github/MyIssuesBoard'
 import { TaskPageGitHubList } from './github/List'
 import { TaskPageGitLabTodoList } from './gitlab/TodoList'
 import { TaskPageGitLabItemList } from './gitlab/ItemList'
@@ -57,6 +58,8 @@ export function TaskPageContent({
         onClose={closeTaskDetailPage}
       />
     )
+  ) : taskSource === 'github' && githubMode === 'my-issues' ? (
+    <MyIssuesBoard model={model} />
   ) : taskSource === 'github' && githubMode === 'project' ? (
     <div className="mt-3 flex min-h-0 min-w-0 max-h-full flex-col overflow-hidden rounded-md border border-border/50 bg-muted/50 shadow-sm">
       <ProjectViewWrapper selectedRepoIds={repoSelection} />

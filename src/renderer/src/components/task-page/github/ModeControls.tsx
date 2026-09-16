@@ -36,25 +36,21 @@ export function TaskPageGitHubModeControls({
         <div className="flex items-center gap-1 text-xs">
           {githubModeButtons.map((mode) => {
             const active =
-              mode.id === 'project'
-                ? githubMode === 'project'
+              mode.id === 'project' || mode.id === 'my-issues'
+                ? githubMode === mode.id
                 : githubMode === 'items' && activeGithubTaskKind === mode.id
             return (
               <button
                 key={mode.id}
                 type="button"
                 onClick={() => {
-                  if (mode.id === 'project') {
-                    setGithubMode('project')
-                    setTaskResumeState({
-                      githubMode: 'project'
-                    })
+                  if (mode.id === 'project' || mode.id === 'my-issues') {
+                    setGithubMode(mode.id)
+                    setTaskResumeState({ githubMode: mode.id })
                     return
                   }
                   setGithubMode('items')
-                  setTaskResumeState({
-                    githubMode: 'items'
-                  })
+                  setTaskResumeState({ githubMode: 'items' })
                   handleSelectGithubTaskKind(mode.id)
                 }}
                 className={cn(
