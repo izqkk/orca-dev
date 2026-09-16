@@ -1,15 +1,15 @@
 import React from 'react'
 import { RefreshCw } from 'lucide-react'
 import type { TaskPageComposerActionsModel } from '../../use-task-page-composer-actions'
-import GitHubItemDialog from '@/components/GitHubItemDialog'
-import ProjectItemSlugDialog from '@/components/github-project/ProjectItemSlugDialog'
-import { ProjectMissingRepoDialog } from '@/components/github-project/ProjectMissingRepoDialog'
+import {
+  ProjectRowItemDialog,
+  ProjectRowSupportDialogs
+} from '@/components/github-project/ProjectRowDialogs'
 import {
   ProjectTableSkeleton,
   ProjectViewErrorState
 } from '@/components/github-project/ProjectViewStates'
 import { useProjectRowActions } from '@/components/github-project/useProjectRowActions'
-import { launchWorkItemDirect } from '@/lib/launch-work-item-direct'
 import { Button } from '@/components/ui/button'
 import { useAppStore } from '@/store'
 import { translate } from '@/i18n/i18n'
@@ -48,14 +48,9 @@ export default function MyIssuesBoard({
         </Button>
       </div>
       <MyIssuesBoardBody board={board} rowActions={rowActions} />
-      <ProjectItemSlugDialog
-        projectOrigin={rowActions.missingDialogs.slugDialog?.origin ?? null}
+      <ProjectRowSupportDialogs
+        rowActions={rowActions}
         sourceSettings={board.settings}
-        onClose={() => rowActions.setSlugDialog(null)}
-      />
-      <ProjectMissingRepoDialog
-        missingRepo={rowActions.missingDialogs.repoNotInOrca}
-        onClose={() => rowActions.setRepoNotInOrca(null)}
         onAddRepo={addRepo}
       />
     </div>
@@ -90,37 +85,19 @@ function MyIssuesBoardBody({
         host={board.activeProject.host}
         onOpenInGitHub={() => {
           if (board.table) {
-            void window.api.shell.openUrl(board.table.project.url)
+            void window.api.shell.openUrl(
+              `${board.table.project.url}/views/${board.table.selectedView.number ?? ''}`
+            )
           }
         }}
       />
     )
   }
-  if (rowActions.resolvedDialogRepoItem) {
-    const dialogItem = rowActions.resolvedDialogRepoItem
+  if (board.table && rowActions.resolvedDialogRepoItem) {
     return (
-      <GitHubItemDialog
-        workItem={dialogItem.workItem}
-        repoPath={dialogItem.repoPath}
-        repoId={dialogItem.repoId}
-        sourceContext={rowActions.dialogSourceContext}
-        projectOrigin={dialogItem.origin}
+      <ProjectRowItemDialog
+        rowActions={rowActions}
         backLabel={translate('auto.components.TaskPage.myIssuesTitle', 'My Issues')}
-        onUse={(item) => {
-          rowActions.setDialogRepoItem(null)
-          void launchWorkItemDirect({
-            item,
-            repoId: dialogItem.workItem.repoId,
-            launchSource: 'task_page',
-            telemetrySource: 'sidebar',
-            openModalFallback: () => {
-              if (item.url) {
-                void window.api.shell.openUrl(item.url)
-              }
-            }
-          })
-        }}
-        onClose={() => rowActions.setDialogRepoItem(null)}
       />
     )
   }

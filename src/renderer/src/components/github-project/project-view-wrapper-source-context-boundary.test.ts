@@ -52,13 +52,15 @@ describe('ProjectViewWrapper GitHub source context boundary', () => {
 
   it('passes the matched repo source context into the repo-backed GitHub dialog', () => {
     const actionSource = componentSource('useProjectRowActions.ts')
-    const wrapperSource = componentSource('ProjectViewWrapper.tsx')
+    // Why: the dialog wiring lives in the shared ProjectRowDialogs component (used by both
+    // ProjectViewWrapper and the My Issues board), not inlined in ProjectViewWrapper anymore.
+    const dialogsSource = componentSource('ProjectRowDialogs.tsx')
     const contextSection = sourceBetween(
       actionSource,
       'const dialogRepo = resolvedDialogRepoItem',
       'const missingDialogs'
     )
-    const dialogSection = sourceBetween(wrapperSource, '<GitHubItemDialog', 'onUse={(item) => {')
+    const dialogSection = sourceBetween(dialogsSource, '<GitHubItemDialog', 'onUse={(item) => {')
 
     expect(actionSource).toContain('buildTaskSourceContextFromRepo')
     expect(contextSection).toContain("provider: 'github'")

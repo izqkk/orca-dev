@@ -1,12 +1,9 @@
 import React from 'react'
-import GitHubItemDialog from '@/components/GitHubItemDialog'
-import { launchWorkItemDirect } from '@/lib/launch-work-item-direct'
 import { useAppStore } from '@/store'
 import { translate } from '@/i18n/i18n'
 import ProjectViewList from './ProjectViewList'
 import ProjectRoadmap from './ProjectRoadmap'
-import ProjectItemSlugDialog from './ProjectItemSlugDialog'
-import { ProjectMissingRepoDialog } from './ProjectMissingRepoDialog'
+import { ProjectRowItemDialog, ProjectRowSupportDialogs } from './ProjectRowDialogs'
 import { ProjectViewToolbar } from './ProjectViewToolbar'
 import {
   ProjectTableSkeleton,
@@ -38,14 +35,9 @@ export default function ProjectViewWrapper({ selectedRepoIds }: Props): React.JS
         />
       ) : null}
       <ProjectViewBody tableState={tableState} rowActions={rowActions} />
-      <ProjectItemSlugDialog
-        projectOrigin={rowActions.missingDialogs.slugDialog?.origin ?? null}
+      <ProjectRowSupportDialogs
+        rowActions={rowActions}
         sourceSettings={tableState.settings}
-        onClose={() => rowActions.setSlugDialog(null)}
-      />
-      <ProjectMissingRepoDialog
-        missingRepo={rowActions.missingDialogs.repoNotInOrca}
-        onClose={() => rowActions.setRepoNotInOrca(null)}
         onAddRepo={addRepo}
       />
     </div>
@@ -90,34 +82,13 @@ function ProjectViewBody({
     )
   }
   if (visibleTable && rowActions.resolvedDialogRepoItem) {
-    const dialogItem = rowActions.resolvedDialogRepoItem
     return (
-      <GitHubItemDialog
-        workItem={dialogItem.workItem}
-        repoPath={dialogItem.repoPath}
-        repoId={dialogItem.repoId}
-        sourceContext={rowActions.dialogSourceContext}
-        projectOrigin={dialogItem.origin}
+      <ProjectRowItemDialog
+        rowActions={rowActions}
         backLabel={translate(
           'auto.components.github.project.ProjectViewWrapper.1aa7c952b9',
           'Project view'
         )}
-        onUse={(item) => {
-          rowActions.setDialogRepoItem(null)
-          // Why: issue #4756 keeps project-view actions on the direct "start work now" path, not the TaskPage background-create flow.
-          void launchWorkItemDirect({
-            item,
-            repoId: dialogItem.workItem.repoId,
-            launchSource: 'task_page',
-            telemetrySource: 'sidebar',
-            openModalFallback: () => {
-              if (item.url) {
-                void window.api.shell.openUrl(item.url)
-              }
-            }
-          })
-        }}
-        onClose={() => rowActions.setDialogRepoItem(null)}
       />
     )
   }
