@@ -139,6 +139,7 @@ export function sanitizeMyIssuesBoardState(value: unknown): MyIssuesBoardState {
     if (!projectValue || typeof projectValue !== 'object') {
       continue
     }
+    // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: guarded by the typeof 'object' check above; only the `items` key is read.
     const rawItems = (projectValue as Record<string, unknown>).items
     if (!rawItems || typeof rawItems !== 'object' || Array.isArray(rawItems)) {
       continue
