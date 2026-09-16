@@ -115,11 +115,13 @@ export function installNativeFileDropHandlers(): void {
         return
       }
       event.preventDefault()
-      event.stopPropagation()
       const files = event.dataTransfer?.files
       if (!files || files.length === 0) {
+        // Why: renderer drags (boards, tabs) carry private MIMEs and no files; stopping them here
+        // would hide the drop from React's delegated onDrop. Only real OS file drops are claimed.
         return
       }
+      event.stopPropagation()
       const resolution = resolveNativeFileDrop(event)
       if (files.length > NATIVE_FILE_DROP_MAX_PATHS) {
         ipcRenderer.send(
