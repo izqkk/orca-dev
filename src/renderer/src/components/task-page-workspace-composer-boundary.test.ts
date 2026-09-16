@@ -9,8 +9,9 @@ import {
 const TASK_PAGE_SOURCE = readTaskPageSourceFamily()
 const WORKSPACE_ACTIONS_SOURCE = readTaskPageSource('use-task-page-workspace-actions.ts')
 const COMPOSER_ACTIONS_SOURCE = readTaskPageSource('use-task-page-composer-actions.ts')
+// Why: the project-view item dialog (and its direct start-work launch) lives in the shared ProjectRowDialogs since the My Issues board reuses it.
 const PROJECT_VIEW_SOURCE = readFileSync(
-  join(__dirname, 'github-project', 'ProjectViewWrapper.tsx'),
+  join(__dirname, 'github-project', 'ProjectRowDialogs.tsx'),
   'utf8'
 )
 const COMPOSER_MODAL_SOURCE = readFileSync(join(__dirname, 'NewWorkspaceComposerModal.tsx'), 'utf8')
