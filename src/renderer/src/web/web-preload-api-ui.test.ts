@@ -458,38 +458,39 @@ describe('web UI preload API', () => {
   })
 
   // Census-driven, matching the host-side seam tests: a field added to PAIRING_LOCAL_UI_FIELDS
-  // without wiring the web read seam fails here rather than shipping. The host sample differs from
-  // the browser's for every field, so only the pin makes this pass.
-  const browserLocalUiSamples: Record<PairingLocalUiField, unknown> = {
-    automationHostFilter: { kind: 'host', hostKey: 'browser-local-host-key' },
-    hideWorkspacesFromOtherDevices: true,
-    manualRepoOrder: [{ hostId: 'runtime:web-env-1', repoId: 'repo-b' }],
-    workspaceHostOrder: ['runtime:web-env-1', 'local'],
-    agentsVisibleHostIds: ['runtime:web-env-1'],
-    agentsFilterRepoIds: ['repo-b'],
-    agentsShowChildAgents: true,
-    agentsCompactMode: false,
-    agentsShowSearch: false,
-    agentsReadFilter: 'unread',
-    agentsGroupBy: 'project',
-    activityClearedAtByPaneKey: { 'tab-1:leaf-1': 123 },
-    manuallyUnreadTurnsByPaneKey: { 'tab-1:leaf-1': 321 }
+  // without wiring the web read seam fails here rather than shipping. Each pair's second value
+  // (the host echo) differs from the first (the browser-local value) for every field, so only
+  // the browser-local pin makes the assertions below pass.
+  const pairingLocalUiSamplePairs: Record<PairingLocalUiField, readonly [unknown, unknown]> = {
+    automationHostFilter: [{ kind: 'host', hostKey: 'browser-local-host-key' }, { kind: 'all' }],
+    hideWorkspacesFromOtherDevices: [true, false],
+    manualRepoOrder: [
+      [{ hostId: 'runtime:web-env-1', repoId: 'repo-b' }],
+      [{ hostId: 'local', repoId: 'repo-a' }]
+    ],
+    workspaceHostOrder: [
+      ['runtime:web-env-1', 'local'],
+      ['local', 'ssh:box']
+    ],
+    agentsVisibleHostIds: [['runtime:web-env-1'], ['local']],
+    agentsFilterRepoIds: [['repo-b'], ['repo-a']],
+    agentsShowChildAgents: [true, false],
+    agentsCompactMode: [false, true],
+    agentsShowSearch: [false, true],
+    agentsReadFilter: ['unread', 'all'],
+    agentsGroupBy: ['project', 'status'],
+    activityClearedAtByPaneKey: [{ 'tab-1:leaf-1': 123 }, { 'tab-2:leaf-2': 456 }],
+    manuallyUnreadTurnsByPaneKey: [{ 'tab-1:leaf-1': 321 }, { 'tab-2:leaf-2': 654 }],
+    githubMyIssuesBoard: [{ 'org:1': { items: {} } }, { 'org:2': { items: {} } }]
   }
-  const hostUiSamples: Record<PairingLocalUiField, unknown> = {
-    automationHostFilter: { kind: 'all' },
-    hideWorkspacesFromOtherDevices: false,
-    manualRepoOrder: [{ hostId: 'local', repoId: 'repo-a' }],
-    workspaceHostOrder: ['local', 'ssh:box'],
-    agentsVisibleHostIds: ['local'],
-    agentsFilterRepoIds: ['repo-a'],
-    agentsShowChildAgents: false,
-    agentsCompactMode: true,
-    agentsShowSearch: true,
-    agentsReadFilter: 'all',
-    agentsGroupBy: 'status',
-    activityClearedAtByPaneKey: { 'tab-2:leaf-2': 456 },
-    manuallyUnreadTurnsByPaneKey: { 'tab-2:leaf-2': 654 }
-  }
+  // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: values come straight from pairingLocalUiSamplePairs's typed tuples.
+  const browserLocalUiSamples = Object.fromEntries(
+    Object.entries(pairingLocalUiSamplePairs).map(([field, pair]) => [field, pair[0]])
+  ) as Record<PairingLocalUiField, unknown>
+  // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: values come straight from pairingLocalUiSamplePairs's typed tuples.
+  const hostUiSamples = Object.fromEntries(
+    Object.entries(pairingLocalUiSamplePairs).map(([field, pair]) => [field, pair[1]])
+  ) as Record<PairingLocalUiField, unknown>
 
   it.each(PAIRING_LOCAL_UI_FIELDS.map((field) => [field] as const))(
     'keeps the browser-local %s and never sends it to the host',
