@@ -31,6 +31,8 @@ export type MyIssuesSyncRow = {
 
 export const EMPTY_MY_ISSUES_PROJECT_STATE: MyIssuesBoardProjectState = { items: {} }
 
+export const MY_ISSUES_ABSENT_ENTRY_TTL_MS = 30 * 24 * 60 * 60 * 1000
+
 const LANE_SET = new Set<string>(MY_ISSUES_LANES)
 
 export function isMyIssuesLane(value: unknown): value is MyIssuesLane {
@@ -60,7 +62,8 @@ export function syncMyIssuesBoard(
   now: string
 ): MyIssuesBoardProjectState {
   const items: Record<string, MyIssuesBoardItemState> = {}
-  let changed = Object.keys(previous.items).length !== rows.length
+  let changed = false
+  const rowIds = new Set(rows.map((row) => row.id))
   for (const row of rows) {
     const entry = previous.items[row.id]
     if (entry && entry.remoteStatusOptionId === row.statusOptionId) {
@@ -73,6 +76,17 @@ export function syncMyIssuesBoard(
       movedAt: now
     }
     changed = true
+  }
+  // Why: the row set is view-dependent (selected view/filter), so absence is not evidence the issue is gone.
+  for (const [id, entry] of Object.entries(previous.items)) {
+    if (rowIds.has(id)) {
+      continue
+    }
+    if (Date.parse(now) - Date.parse(entry.movedAt) > MY_ISSUES_ABSENT_ENTRY_TTL_MS) {
+      changed = true
+      continue
+    }
+    items[id] = entry
   }
   return changed ? { items } : previous
 }

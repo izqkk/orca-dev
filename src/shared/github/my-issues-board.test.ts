@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   EMPTY_MY_ISSUES_PROJECT_STATE,
+  MY_ISSUES_ABSENT_ENTRY_TTL_MS,
   MY_ISSUES_LANES,
   mapRemoteStatusToLane,
   moveMyIssuesItem,
@@ -99,7 +100,7 @@ describe('syncMyIssuesBoard', () => {
     expect(next.items.i1).toEqual({ lane: 'backlog', remoteStatusOptionId: null, movedAt: LATER })
   })
 
-  it('drops entries whose row is gone', () => {
+  it('keeps an absent entry unchanged when movedAt is within the TTL', () => {
     const previous = {
       items: {
         i1: { lane: 'today', remoteStatusOptionId: 'opt-progress', movedAt: NOW },
@@ -111,12 +112,32 @@ describe('syncMyIssuesBoard', () => {
       [{ id: 'i1', statusOptionId: 'opt-progress', statusName: 'In progress' }],
       LATER
     )
+    expect(next.items.gone).toBe(previous.items.gone)
+    expect(Object.keys(next.items).sort()).toEqual(['gone', 'i1'])
+  })
+
+  it('drops an absent entry once movedAt is older than the TTL relative to now', () => {
+    const staleMovedAt = new Date(Date.parse(NOW) - MY_ISSUES_ABSENT_ENTRY_TTL_MS - 1).toISOString()
+    const previous = {
+      items: {
+        i1: { lane: 'today', remoteStatusOptionId: 'opt-progress', movedAt: NOW },
+        gone: { lane: 'done', remoteStatusOptionId: 'opt-done', movedAt: staleMovedAt }
+      }
+    } as const
+    const next = syncMyIssuesBoard(
+      previous,
+      [{ id: 'i1', statusOptionId: 'opt-progress', statusName: 'In progress' }],
+      NOW
+    )
     expect(Object.keys(next.items)).toEqual(['i1'])
   })
 
-  it('returns the same reference when nothing changed', () => {
+  it('returns the same reference when nothing changed, including an absent-but-recent entry', () => {
     const previous = {
-      items: { i1: { lane: 'today', remoteStatusOptionId: 'opt-progress', movedAt: NOW } }
+      items: {
+        i1: { lane: 'today', remoteStatusOptionId: 'opt-progress', movedAt: NOW },
+        gone: { lane: 'done', remoteStatusOptionId: 'opt-done', movedAt: NOW }
+      }
     } as const
     const next = syncMyIssuesBoard(
       previous,
