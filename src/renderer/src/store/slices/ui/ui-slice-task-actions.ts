@@ -28,6 +28,7 @@ export function createUiTaskActions(set: UISliceSet, get: UISliceGet): Partial<U
     setActiveView: (view) => set({ activeView: view }),
     taskPageData: {},
     taskResumeState: undefined,
+    githubMyIssuesBoard: {},
     taskListPosition: null,
     githubTaskDrawerWorkItem: null,
     newWorkspaceDraft: null,
@@ -185,6 +186,12 @@ export function createUiTaskActions(set: UISliceSet, get: UISliceGet): Partial<U
         const next = { ...s.taskResumeState, ...updates }
         window.api.ui.set({ taskResumeState: next }).catch(console.error)
         return { taskResumeState: next }
+      }),
+    setGithubMyIssuesBoardProject: (projectKey, projectState) =>
+      set((s) => {
+        const next = { ...s.githubMyIssuesBoard, [projectKey]: projectState }
+        window.api.ui.set({ githubMyIssuesBoard: next }).catch(console.error)
+        return { githubMyIssuesBoard: next }
       }),
     setTaskListPosition: (taskListPosition) => set({ taskListPosition }),
     setGithubTaskDrawerWorkItem: (item) => set({ githubTaskDrawerWorkItem: item }),

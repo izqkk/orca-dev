@@ -68,7 +68,7 @@ export type StatusBarItem =
 export type FloatingTerminalTriggerLocation = 'floating-button' | 'status-bar'
 
 export type TaskResumeState = {
-  githubMode?: 'items' | 'project'
+  githubMode?: 'items' | 'project' | 'my-issues'
   githubItemsPreset?: TaskViewPresetId | null
   githubItemsQuery?: string
   githubProjectHiddenFieldIdsByView?: Record<string, string[]>

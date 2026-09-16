@@ -10,6 +10,10 @@ import type { LaunchSource } from '../../../../../shared/telemetry-events'
 import type { TaskSourceContext } from '../../../../../shared/task-source-context'
 import type { ExecutionHostId } from '../../../../../shared/execution-host'
 import type { TaskResumeState, TopLevelView } from '../../../../../shared/ui-chrome-types'
+import type {
+  MyIssuesBoardProjectState,
+  MyIssuesBoardState
+} from '../../../../../shared/github/my-issues-board'
 
 export type PendingSidebarWorktreeReveal = {
   worktreeId: string
@@ -155,6 +159,11 @@ export type UISliceCore = {
   taskPageData: TaskPageData
   taskResumeState: TaskResumeState | undefined
   setTaskResumeState: (updates: Partial<TaskResumeState>) => void
+  githubMyIssuesBoard: MyIssuesBoardState
+  setGithubMyIssuesBoardProject: (
+    projectKey: string,
+    projectState: MyIssuesBoardProjectState
+  ) => void
   taskListPosition: { contextKey: string; page: number; scrollTop: number } | null
   setTaskListPosition: (position: UISliceCore['taskListPosition']) => void
   githubTaskDrawerWorkItem: GitHubWorkItem | null

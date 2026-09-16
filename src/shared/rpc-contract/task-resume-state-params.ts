@@ -10,7 +10,7 @@ import { z } from 'zod'
  */
 export const TaskResumeState = z
   .object({
-    githubMode: z.enum(['items', 'project']).optional(),
+    githubMode: z.enum(['items', 'project', 'my-issues']).optional(),
     githubItemsPreset: z.string().nullable().optional(),
     githubItemsQuery: z.string().optional(),
     githubProjectHiddenFieldIdsByView: z.record(z.string(), z.array(z.string())).optional(),

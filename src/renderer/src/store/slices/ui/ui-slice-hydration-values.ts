@@ -10,6 +10,10 @@ import {
   sanitizeActivityClearedAtByPaneKey,
   sanitizePaneKeyTimestampRecord
 } from './ui-slice-hydration-sanitizers'
+import {
+  sanitizeMyIssuesBoardState,
+  type MyIssuesBoardState
+} from '../../../../../shared/github/my-issues-board'
 
 const VALID_TASK_PRESETS = new Set<TaskViewPresetId>([
   'all',
@@ -44,7 +48,11 @@ export function sanitizeTaskResumeState(value: unknown): TaskResumeState | undef
   }
   const input = value as Record<string, unknown>
   const next: TaskResumeState = {}
-  if (input.githubMode === 'items' || input.githubMode === 'project') {
+  if (
+    input.githubMode === 'items' ||
+    input.githubMode === 'project' ||
+    input.githubMode === 'my-issues'
+  ) {
     next.githubMode = input.githubMode
   }
   if (input.githubItemsPreset === null) {
@@ -153,4 +161,8 @@ export function hydrateAgentReadState(
     activityClearedAtByPaneKey: sanitizeActivityClearedAtByPaneKey(ui.activityClearedAtByPaneKey),
     manuallyUnreadTurnsByPaneKey: sanitizePaneKeyTimestampRecord(ui.manuallyUnreadTurnsByPaneKey)
   }
+}
+
+export function sanitizeGithubMyIssuesBoard(value: unknown): MyIssuesBoardState {
+  return sanitizeMyIssuesBoardState(value)
 }

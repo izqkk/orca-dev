@@ -7,6 +7,7 @@ import type { UsagePercentageDisplay } from './usage-percentage-display'
 import type { StatusBarUsageMode } from './status-bar-usage-mode'
 import type { PersistedTrustedOrcaHooks } from './orca-yaml-hook-types'
 import type { CustomPet } from './pet-types'
+import type { MyIssuesBoardState } from './github/my-issues-board'
 import type {
   ActivityGroupBy,
   AgentActivityDisplayMode,
@@ -217,6 +218,8 @@ export type PersistedUIState = {
   sidekickSize?: number
   /** Page-position state for Tasks: only transient tabs/searches (source/repo/team/project selections use their own settings paths). */
   taskResumeState?: TaskResumeState
+  /** Local-only lane overlay for the Tasks page "My Issues" board, keyed by project identity. */
+  githubMyIssuesBoard?: MyIssuesBoardState
   workspaceCleanup?: WorkspaceCleanupUIState
   /** Feature tips already surfaced; startup opens the tips modal only when a current tip id is missing here. */
   featureTipsSeenIds?: FeatureTipId[]

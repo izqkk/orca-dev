@@ -12,6 +12,7 @@ import { isReleaseChannel } from '../release-channel'
 import type { ReleaseChannel } from '../release-channel'
 import { ClientUiWorkspaceFilterFields } from './client-ui-workspace-filter-fields-params'
 import { TaskResumeState } from './task-resume-state-params'
+import { MyIssuesBoardParam } from './my-issues-board-params'
 import { WorkspaceCleanup } from './workspace-cleanup-ui-params'
 import { omitUndefinedValues, tolerateUnknownValues } from './ui-update-value-tolerance-params'
 
@@ -242,6 +243,7 @@ export const UiUpdateFields = z
     customSidekicks: UnknownRecordArray.optional(),
     sidekickSize: z.number().finite().optional(),
     taskResumeState: TaskResumeState.optional(),
+    githubMyIssuesBoard: MyIssuesBoardParam.optional(),
     workspaceCleanup: WorkspaceCleanup.optional(),
     featureTipsSeenIds: FeatureTipIds.optional(),
     featureInteractions: FeatureInteractions.optional(),
