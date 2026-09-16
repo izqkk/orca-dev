@@ -162,6 +162,18 @@ describe('selectMyIssuesRows', () => {
     expect(r.statusName).toBeNull()
     expect(r.priorityRank).toBe(Number.POSITIVE_INFINITY)
   })
+
+  it('drops closed issues and issues without a state', () => {
+    const rows = selectMyIssuesRows(
+      table([
+        row('open', { state: 'OPEN' }),
+        row('closed', { state: 'CLOSED' }),
+        row('nostate', { state: null })
+      ]),
+      'izqkk'
+    )
+    expect(rows.map((r) => r.row.id)).toEqual(['open'])
+  })
 })
 
 describe('toMyIssuesSyncRows', () => {

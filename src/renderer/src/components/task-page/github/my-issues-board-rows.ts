@@ -63,6 +63,10 @@ export function selectMyIssuesRows(
     if (row.itemType !== 'ISSUE') {
       continue
     }
+    // Why: the board is a to-do surface; closed issues drop out at the next sync (Rico, 2026-09-16).
+    if (row.content.state !== 'OPEN') {
+      continue
+    }
     if (!row.content.assignees.some((user) => user.login.toLowerCase() === login)) {
       continue
     }
