@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { RefreshCw } from 'lucide-react'
 import type { TaskPageComposerActionsModel } from '../../use-task-page-composer-actions'
 import {
@@ -21,12 +21,16 @@ export default function MyIssuesBoard({
 }: {
   model: TaskPageComposerActionsModel
 }): React.JSX.Element {
-  const { repoSelection, githubViewerLogin } = model
-  const board = useMyIssuesBoard({ selectedRepoIds: repoSelection, viewerLogin: githubViewerLogin })
+  const { githubViewerLogin } = model
+  const repos = useAppStore((state) => state.repos)
+  // Why: the board is scoped by assignee, not by the sidebar repo selection, so row actions
+  // must see every repo or they refuse cards the board itself is showing.
+  const allRepoIds = useMemo(() => new Set(repos.map((repo) => repo.id)), [repos])
+  const board = useMyIssuesBoard({ selectedRepoIds: allRepoIds, viewerLogin: githubViewerLogin })
   const rowActions = useProjectRowActions({
     table: board.table,
     currentCacheKey: board.currentCacheKey,
-    selectedRepoIds: repoSelection
+    selectedRepoIds: allRepoIds
   })
   const addRepo = useAppStore((state) => state.addRepo)
 
@@ -40,14 +44,14 @@ export default function MyIssuesBoard({
         <Button
           variant="ghost"
           size="icon-xs"
-          disabled={!board.activeProject || board.loading}
+          disabled={!board.activeProject || !board.currentCacheKey || board.loading}
           onClick={board.refresh}
           aria-label={translate('auto.components.TaskPage.myIssuesRefresh', 'Refresh board')}
         >
           <RefreshCw className={board.loading ? 'size-3.5 animate-spin' : 'size-3.5'} />
         </Button>
       </div>
-      <MyIssuesBoardBody board={board} rowActions={rowActions} />
+      <MyIssuesBoardBody board={board} rowActions={rowActions} viewerLogin={githubViewerLogin} />
       <ProjectRowSupportDialogs
         rowActions={rowActions}
         sourceSettings={board.settings}
@@ -59,10 +63,12 @@ export default function MyIssuesBoard({
 
 function MyIssuesBoardBody({
   board,
-  rowActions
+  rowActions,
+  viewerLogin
 }: {
   board: ReturnType<typeof useMyIssuesBoard>
   rowActions: ReturnType<typeof useProjectRowActions>
+  viewerLogin: string | null
 }): React.JSX.Element | null {
   if (!board.activeProject) {
     return (
@@ -70,6 +76,16 @@ function MyIssuesBoardBody({
         {translate(
           'auto.components.TaskPage.myIssuesNoProject',
           'Choose a project in Projects mode first.'
+        )}
+      </Hint>
+    )
+  }
+  if (!board.currentCacheKey) {
+    return (
+      <Hint>
+        {translate(
+          'auto.components.TaskPage.myIssuesNoView',
+          'Open this project once in Projects mode to pick a view.'
         )}
       </Hint>
     )
@@ -110,6 +126,16 @@ function MyIssuesBoardBody({
         {translate(
           'auto.components.TaskPage.myIssuesStatusMissing',
           'The selected view does not expose a Status field. Pick a view that shows or groups by Status in Projects mode.'
+        )}
+      </Hint>
+    )
+  }
+  if (viewerLogin === null) {
+    return (
+      <Hint>
+        {translate(
+          'auto.components.TaskPage.myIssuesNoViewer',
+          "Couldn't determine your GitHub user — check `gh auth status`."
         )}
       </Hint>
     )
