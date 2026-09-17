@@ -142,10 +142,10 @@ export const getJiraPresets = createLocalizedCatalog((): JiraPreset[] => [
 ])
 
 export const getGitHubModeButtons = createLocalizedCatalog((): GitHubModeButton[] => [
+  { id: 'my-issues', label: translate('auto.components.TaskPage.myIssuesMode', 'My Issues') },
   { id: 'issues', label: translate('auto.components.TaskPage.dfc0c79bd8', 'Issues') },
   { id: 'prs', label: translate('auto.components.TaskPage.137e2a8a01', 'PRs') },
-  { id: 'project', label: translate('auto.components.TaskPage.727069bee5', 'Projects') },
-  { id: 'my-issues', label: translate('auto.components.TaskPage.myIssuesMode', 'My Issues') }
+  { id: 'project', label: translate('auto.components.TaskPage.727069bee5', 'Projects') }
 ])
 
 export const getLinearModeOptions = createLocalizedCatalog(

@@ -18,10 +18,10 @@ describe('task-page-localized-options', () => {
       'Assigned to me'
     ])
     expect(getGitHubModeButtons().map((button) => button.label)).toEqual([
+      'My Issues',
       'Issues',
       'PRs',
-      'Projects',
-      'My Issues'
+      'Projects'
     ])
 
     await i18n.changeLanguage('ko')
@@ -31,10 +31,10 @@ describe('task-page-localized-options', () => {
       '나에게 할당됨'
     ])
     expect(getGitHubModeButtons().map((button) => button.label)).toEqual([
+      'My Issues',
       '이슈',
       'PR',
-      '프로젝트',
-      'My Issues'
+      '프로젝트'
     ])
 
     await i18n.changeLanguage('en')
@@ -44,10 +44,10 @@ describe('task-page-localized-options', () => {
       'Assigned to me'
     ])
     expect(getGitHubModeButtons().map((button) => button.label)).toEqual([
+      'My Issues',
       'Issues',
       'PRs',
-      'Projects',
-      'My Issues'
+      'Projects'
     ])
   })
 
