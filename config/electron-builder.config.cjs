@@ -343,7 +343,10 @@ module.exports = {
     // Why after the prune: `pnpm install:release` widens the CPU set for cross-builds,
     // so an arm64 slice can still carry the x64 @parcel/watcher until
     // prunePackagedRuntimeNodeModules drops it.
-    if (context.electronPlatformName === 'linux') {
+    // Why: a fork build installed on the packaging host itself has no older glibc to protect;
+    // the locally rebuilt node-pty legitimately links the host's glibc.
+    const skipGlibcFloor = process.env.ORCA_SKIP_LINUX_GLIBC_FLOOR === '1'
+    if (context.electronPlatformName === 'linux' && !skipGlibcFloor) {
       // Why the arch is passed: symbol-version checks pass happily on a wrong-architecture binary,
       // so a cross-built slice could ship the host's pty.node and only fail at runtime.
       verifyLinuxGlibcFloor(context.appOutDir, {
