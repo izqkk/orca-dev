@@ -191,7 +191,7 @@ describe('sanitizeMyIssuesBoardState', () => {
 
   it('keeps valid entries and drops garbage without throwing', () => {
     const input = {
-      'organization:runprise:2': {
+      'organization:octo-org:2': {
         items: {
           ok: { lane: 'today', remoteStatusOptionId: 'opt', movedAt: NOW },
           okNull: { lane: 'done', remoteStatusOptionId: null, movedAt: NOW },
@@ -205,7 +205,7 @@ describe('sanitizeMyIssuesBoardState', () => {
       alsoBroken: 42
     }
     expect(sanitizeMyIssuesBoardState(input)).toEqual({
-      'organization:runprise:2': {
+      'organization:octo-org:2': {
         items: {
           ok: { lane: 'today', remoteStatusOptionId: 'opt', movedAt: NOW },
           okNull: { lane: 'done', remoteStatusOptionId: null, movedAt: NOW }

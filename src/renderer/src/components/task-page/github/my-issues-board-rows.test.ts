@@ -86,8 +86,8 @@ function row(
       state: 'OPEN',
       stateReason: null,
       isDraft: null,
-      repository: 'runprise/app',
-      assignees: [{ login: 'izqkk', name: null, avatarUrl: null }],
+      repository: 'octo-org/app',
+      assignees: [{ login: 'octocat', name: null, avatarUrl: null }],
       labels: [],
       parentIssue: null,
       issueType: null,
@@ -103,11 +103,11 @@ function table(rows: GitHubProjectRow[]): GitHubProjectTable {
   return {
     project: {
       id: 'P',
-      owner: 'runprise',
+      owner: 'octo-org',
       ownerType: 'organization',
       number: 2,
       title: 'X',
-      url: 'https://github.com/orgs/runprise/projects/2'
+      url: 'https://github.com/orgs/octo-org/projects/2'
     },
     selectedView: VIEW,
     rows,
@@ -134,20 +134,20 @@ describe('selectMyIssuesRows', () => {
         row('other', { assignees: [{ login: 'someone', name: null, avatarUrl: null }] }),
         row('unassigned', { assignees: [] })
       ]),
-      'izqkk'
+      'octocat'
     )
     expect(rows.map((r) => r.row.id)).toEqual(['mine'])
   })
 
   it('matches the viewer login case-insensitively', () => {
-    const rows = selectMyIssuesRows(table([row('mine')]), 'IZQKK')
+    const rows = selectMyIssuesRows(table([row('mine')]), 'OCTOCAT')
     expect(rows).toHaveLength(1)
   })
 
   it('extracts status, priority rank and chips', () => {
     const [r] = selectMyIssuesRows(
       table([row('a', { status: 'o-progress', priority: 'p1' })]),
-      'izqkk'
+      'octocat'
     )
     expect(r.statusOptionId).toBe('o-progress')
     expect(r.statusName).toBe('In progress')
@@ -157,7 +157,7 @@ describe('selectMyIssuesRows', () => {
   })
 
   it('yields null status and Infinity rank when fields are unset', () => {
-    const [r] = selectMyIssuesRows(table([row('a')]), 'izqkk')
+    const [r] = selectMyIssuesRows(table([row('a')]), 'octocat')
     expect(r.statusOptionId).toBeNull()
     expect(r.statusName).toBeNull()
     expect(r.priorityRank).toBe(Number.POSITIVE_INFINITY)
@@ -170,7 +170,7 @@ describe('selectMyIssuesRows', () => {
         row('closed', { state: 'CLOSED' }),
         row('nostate', { state: null })
       ]),
-      'izqkk'
+      'octocat'
     )
     expect(rows.map((r) => r.row.id)).toEqual(['open'])
   })
@@ -178,7 +178,7 @@ describe('selectMyIssuesRows', () => {
 
 describe('toMyIssuesSyncRows', () => {
   it('projects id + status only', () => {
-    const rows = selectMyIssuesRows(table([row('a', { status: 'o-done' })]), 'izqkk')
+    const rows = selectMyIssuesRows(table([row('a', { status: 'o-done' })]), 'octocat')
     expect(toMyIssuesSyncRows(rows)).toEqual([
       { id: 'a', statusOptionId: 'o-done', statusName: 'Done' }
     ])
@@ -189,7 +189,7 @@ describe('groupMyIssuesRowsByLane', () => {
   it('places rows by local lane, falling back to the remote mapping when the overlay has no entry', () => {
     const rows = selectMyIssuesRows(
       table([row('a', { status: 'o-progress' }), row('b', { status: 'o-done' }), row('c')]),
-      'izqkk'
+      'octocat'
     )
     const grouped = groupMyIssuesRowsByLane(rows, {
       items: {
@@ -215,14 +215,14 @@ describe('groupMyIssuesRowsByLane', () => {
         row('p0', { priority: 'p0', position: 5 }),
         row('p2-first', { priority: 'p2', position: 3 })
       ]),
-      'izqkk'
+      'octocat'
     )
     const grouped = groupMyIssuesRowsByLane(rows, { items: {} })
     expect(grouped.backlog.map((r) => r.row.id)).toEqual(['p0', 'late-p2', 'p2-first', 'none'])
   })
 
   it('orders today by movedAt ascending', () => {
-    const rows = selectMyIssuesRows(table([row('a'), row('b')]), 'izqkk')
+    const rows = selectMyIssuesRows(table([row('a'), row('b')]), 'octocat')
     const grouped = groupMyIssuesRowsByLane(rows, {
       items: {
         a: { lane: 'today', remoteStatusOptionId: null, movedAt: '2026-09-16T12:00:00.000Z' },

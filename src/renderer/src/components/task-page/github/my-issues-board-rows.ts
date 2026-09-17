@@ -63,7 +63,7 @@ export function selectMyIssuesRows(
     if (row.itemType !== 'ISSUE') {
       continue
     }
-    // Why: the board is a to-do surface; closed issues drop out at the next sync (Rico, 2026-09-16).
+    // Why: the board is a to-do surface; closed issues drop out at the next sync.
     if (row.content.state !== 'OPEN') {
       continue
     }
