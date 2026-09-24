@@ -182,9 +182,12 @@ export function computeVisibleWorktrees(
     return ai - bi
   })
 
-  return opts.injectLineageAncestors === false
-    ? all
-    : addVisibleLineageAncestors(all, lineageAncestorById, opts.worktreeLineageById)
+  const visible =
+    opts.injectLineageAncestors === false
+      ? all
+      : addVisibleLineageAncestors(all, lineageAncestorById, opts.worktreeLineageById)
+  // Why last: lineage ancestors and forced rows must not resurface an archived project.
+  return visible.filter((worktree) => opts.repoMap.get(worktree.repoId)?.isArchived !== true)
 }
 
 function addVisibleLineageAncestors(

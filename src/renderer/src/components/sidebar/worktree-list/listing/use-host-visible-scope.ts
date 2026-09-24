@@ -32,10 +32,11 @@ export function useSidebarHostVisibleScope(args: {
     [visibleWorkspaceHostIds, workspaceHostScope]
   )
   const visibleReposForRows = useMemo(() => {
+    const unarchivedRepos = repos.filter((repo) => repo.isArchived !== true)
     if (!visibleHostIdSet) {
-      return repos
+      return unarchivedRepos
     }
-    return repos.filter((repo) => {
+    return unarchivedRepos.filter((repo) => {
       const hostId =
         repo.connectionId || repo.executionHostId ? getRepoExecutionHostId(repo) : defaultHostId
       return visibleHostIdSet.has(hostId)
@@ -47,7 +48,7 @@ export function useSidebarHostVisibleScope(args: {
   )
   const visibleFolderWorkspacesForRows = useMemo(() => {
     const hostVisibleWorkspaces = filterFolderWorkspacesForVisibleHosts(
-      folderWorkspaces,
+      folderWorkspaces.filter((workspace) => !workspace.isArchived),
       projectGroups,
       visibleHostIdSet,
       defaultHostId

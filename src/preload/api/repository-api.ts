@@ -64,6 +64,7 @@ export type RepositoryApi = {
         | 'worktreeVisibilitySourcePreferences'
         | 'projectGroupId'
         | 'projectGroupOrder'
+        | 'isArchived'
         | 'forkSyncMode'
       >
     > & {

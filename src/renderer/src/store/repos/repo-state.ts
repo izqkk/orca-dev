@@ -50,6 +50,7 @@ export type RepoUpdate = Partial<
     | 'worktreeVisibilitySourcePreferences'
     | 'projectGroupId'
     | 'projectGroupOrder'
+    | 'isArchived'
   >
 > & {
   externalWorktreeVisibility?: Repo['externalWorktreeVisibility'] | null

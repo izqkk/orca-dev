@@ -244,11 +244,9 @@ export function getWorkspaceCleanupInactivityReasons(
   scannedAt: number
 ): WorkspaceCleanupReason[] {
   const reasons: WorkspaceCleanupReason[] = []
-  if (
-    workspace.isArchived &&
-    scannedAt - workspace.lastActivityAt >= WORKSPACE_CLEANUP_ARCHIVED_IDLE_MS
-  ) {
-    reasons.push('archived')
+  // Fork: archiving is a keep decision, so archived workspaces are never cleanup candidates.
+  if (workspace.isArchived) {
+    return reasons
   }
   if (scannedAt - workspace.lastActivityAt >= WORKSPACE_CLEANUP_IDLE_MS) {
     reasons.push('idle-clean')

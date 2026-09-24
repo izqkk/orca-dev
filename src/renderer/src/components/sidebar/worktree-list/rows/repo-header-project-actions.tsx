@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  Archive,
   CircleX,
   Ellipsis,
   Eye,
@@ -12,6 +13,7 @@ import {
   Trash2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { archiveProject } from '../../workspace-archive-actions'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   DropdownMenu,
@@ -166,6 +168,10 @@ export function RepoHeaderProjectActionsMenu({
           </DropdownMenuItem>
         ) : null}
         <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={() => void archiveProject(repo)}>
+          <Archive className="size-3.5" />
+          {translate('auto.components.sidebar.WorktreeList.archiveProject', 'Archive Project')}
+        </DropdownMenuItem>
         <DropdownMenuItem variant="destructive" onSelect={() => actions.onRemoveProject(repo)}>
           <Trash2 className="size-3.5" />
           {translate('auto.components.sidebar.WorktreeList.c83968f87f', 'Remove Project')}

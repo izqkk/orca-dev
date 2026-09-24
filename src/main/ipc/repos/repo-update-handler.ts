@@ -46,6 +46,7 @@ export function registerRepoUpdateHandler(mainWindow: BrowserWindow, store: Stor
             | 'worktreeVisibilitySourcePreferences'
             | 'projectGroupId'
             | 'projectGroupOrder'
+            | 'isArchived'
           >
         > & {
           externalWorktreeVisibility?: Repo['externalWorktreeVisibility'] | null

@@ -107,6 +107,8 @@ export type Repo = {
   projectGroupId?: string | null
   /** User-authored ordering inside the project group or ungrouped bucket. */
   projectGroupOrder?: number
+  /** Hidden from the sidebar and Cmd-J; nothing on disk or in worktree metadata changes. */
+  isArchived?: boolean
   /** Repo-specific source-control AI overrides. Missing fields inherit global settings. */
   sourceControlAi?: RepoSourceControlAiOverrides
   /** Transitional source for ProjectHostSetup.setupMethod while Repo remains compatibility storage. */

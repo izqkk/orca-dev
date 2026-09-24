@@ -66,6 +66,7 @@ export class RepoUpdatePersistenceOperations {
         | 'worktreeVisibilitySourcePreferences'
         | 'projectGroupId'
         | 'projectGroupOrder'
+        | 'isArchived'
         | 'projectHostSetupMethod'
       >
     > & {
@@ -128,6 +129,9 @@ export class RepoUpdatePersistenceOperations {
         !Number.isFinite(sanitizedUpdates.projectGroupOrder))
     ) {
       delete sanitizedUpdates.projectGroupOrder
+    }
+    if ('isArchived' in sanitizedUpdates && typeof sanitizedUpdates.isArchived !== 'boolean') {
+      delete sanitizedUpdates.isArchived
     }
     const externalWorktreeVisibilityLegacy =
       'externalWorktreeVisibility' in sanitizedUpdates &&

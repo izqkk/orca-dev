@@ -34,7 +34,7 @@ export function useWorktreeJumpPaletteWorktrees({
   worktreesByRepo,
   agentStatusByPaneKey,
   tabsByWorktree,
-  allWorktrees,
+  allWorktrees: storeWorktrees,
   filterPredicate,
   hideDefaultBranchWorkspace,
   hideAutomationGeneratedWorkspaces,
@@ -65,6 +65,11 @@ export function useWorktreeJumpPaletteWorktrees({
   issueCache,
   workspacePortScan
 }: WorktreeJumpPaletteWorktreesInput) {
+  // Why: an archived project's workspaces leave Cmd-J along with its sidebar header.
+  const allWorktrees = useMemo(
+    () => storeWorktrees.filter((worktree) => repoMap.get(worktree.repoId)?.isArchived !== true),
+    [repoMap, storeWorktrees]
+  )
   const hasQuery = paletteSearchQuery.length > 0
   const isLoading = repos.length > 0 && Object.keys(worktreesByRepo).length === 0
   const worktreeIdsWithLiveAgent = useMemo(

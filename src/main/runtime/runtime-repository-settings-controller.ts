@@ -35,6 +35,7 @@ type RepositoryUpdates = Partial<
     | 'agentWorktreeVisibility'
     | 'projectGroupId'
     | 'projectGroupOrder'
+    | 'isArchived'
   >
 > & {
   sourceControlAi?: Repo['sourceControlAi'] | null

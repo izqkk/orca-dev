@@ -98,7 +98,7 @@ function buildCmdJProjectSearchCandidates({
 
   const seenRowKeys = new Set<string>()
   repos.forEach((repo, repoIndex) => {
-    if (renderableRepoIds && !renderableRepoIds.has(repo.id)) {
+    if (repo.isArchived === true || (renderableRepoIds && !renderableRepoIds.has(repo.id))) {
       return
     }
     const target = getProjectHeaderRevealTarget(repo.id, repoMap, projectGrouping)

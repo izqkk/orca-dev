@@ -34,6 +34,10 @@ vi.mock('./ScrollToCurrentWorkspaceToolbarButton', () => ({
   ScrollToCurrentWorkspaceToolbarButton: () => <button type="button">Current workspace</button>
 }))
 
+vi.mock('./ArchivedWorkspacesPopover', () => ({
+  ArchivedWorkspacesPopover: () => <button type="button">Archived</button>
+}))
+
 vi.mock('./SidebarSettingsHelpMenu', () => ({
   SidebarSettingsHelpMenu: () => <button type="button">Settings</button>
 }))
